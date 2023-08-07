@@ -7,16 +7,17 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { PRIMARY_BLUE } from '../../css components/colours';
 import auth from '@react-native-firebase/auth';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
-
-
-
+import TranslatedText from "../../common components/translated_text"
+import { useTranslation } from "next-i18next";
+import i18n from '../../util/i18n'; 
 
 const LogIn = () => {
+    const {t, i18n } = useTranslation();
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false);
     const [showlanDiag, setShowlanDiag] = useState(false);
-
+    const [currentLanguage,setLanguage] =useState('en');
 
     const logIn = () => {
         auth().signInWithEmailAndPassword(userName, password).then(() => {
@@ -84,6 +85,13 @@ const LogIn = () => {
         return auth().signInWithCredential(facebookCredential);
     }
 
+    const changeLanguage = value => {
+        console.warn(value);
+        i18n
+            .changeLanguage(value)
+            .then(()=>setLanguage(value))
+            .catch(err => console.log(err));
+    };
     return (
         <View style={{
             flex: 1,
@@ -103,11 +111,15 @@ const LogIn = () => {
                 </View>
                 {showlanDiag ?
                     <View style={{ borderColor: 'black', borderWidth: 1, alignItems: 'center', width: '40%', justifyContent: 'space-around' }}>
-                        <TouchableOpacity style={{ padding: 5, width: '100%', alignItems: 'center' }}>
+                        <TouchableOpacity
+                            style={{ padding: 5, width: '100%', alignItems: 'center' }}
+                            onPress={() => changeLanguage('en')}>
                             <Text>English</Text>
                         </TouchableOpacity>
                         <Divider />
-                        <TouchableOpacity style={{ padding: 5, width: '100%', alignItems: 'center' }} >
+                        <TouchableOpacity
+                            style={{ padding: 5, width: '100%', alignItems: 'center' }}
+                            onPress={() => changeLanguage('bn')}>
                             <Text>Bangla</Text>
                         </TouchableOpacity>
                     </View> : null}
